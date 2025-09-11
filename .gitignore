@@ -1,0 +1,32 @@
+# Visual Studio user-specific files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+Debug/
+Release/
+[Bb]uild/
+[Ll]og/
+
+# DotNet
+*.dll
+*.pdb
+*.cache
+*.log
+
+# Publish outputs
+publish/
+out/
+
+# Other IDEs
+.idea/
+*.vscode/
+
+# OS generated
+.DS_Store
+Thumbs.db

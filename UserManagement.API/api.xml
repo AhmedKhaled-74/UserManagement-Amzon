@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UserManagement.API</name>
+    </assembly>
+    <members>
+        <member name="T:UserManagement.API.AssemblyMarker">
+            <summary>
+            used to locate the assembly for add application parts 
+            to add the controller end points 
+            in the presentation layer.
+            </summary>
+        </member>
+        <member name="T:UserManagement.API.Controllers.CustomHelperController">
+            <summary>
+            Provides helper endpoints for custom operations within the API.
+            </summary>
+            <remarks>This controller serves as a base for defining custom helper actions that can be accessed via
+            the API. It is decorated with versioning and routing attributes to support API versioning and consistent
+            endpoint structure.</remarks>
+        </member>
+        <member name="T:UserManagement.API.Controllers.v1.AccountController">
+            <summary>
+            Provides endpoints for user account management, including registration, login, email confirmation,  password
+            reset, and token generation.
+            </summary>
+            <remarks>This controller handles user-related operations such as creating new accounts, authenticating
+            users,  confirming email addresses, resetting passwords, and managing JWT tokens. It integrates with ASP.NET 
+            Identity for user and role management and supports email-based workflows for account confirmation  and password
+            recovery.</remarks>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.#ctor(Microsoft.Extensions.Logging.ILogger{UserManagement.API.Controllers.v1.AccountController},Microsoft.AspNetCore.Identity.UserManager{UserManagement.Domain.Entities.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{UserManagement.Domain.Entities.Identity.ApplicationRole},UserManagement.Application.ServiceContracts.IUserPublisher,Microsoft.AspNetCore.Identity.SignInManager{UserManagement.Domain.Entities.Identity.ApplicationUser},Microsoft.Extensions.Configuration.IConfiguration,UserManagement.Application.ServiceContracts.IJwtService,Microsoft.AspNetCore.Identity.UI.Services.IEmailSender)">
+            <summary>
+            constructor for account controller
+            </summary>
+            <param name="logger"></param>
+            <param name="userManager"></param>
+            <param name="roleManager"></param>
+            <param name="userPublisher"></param> 
+            <param name="signInManager"></param>
+            <param name="configuration"></param>
+            <param name="jwtService"></param>
+            <param name="emailSender"></param>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.PostRegister(UserManagement.Application.DTOs.UserDTOs.RegisterDTO)">
+            <summary>
+            Register new user → send confirmation email
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.ConfirmEmail(System.String,System.String)">
+            <summary>
+            Email confirmation endpoint
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.CheckEmailExists(System.String)">
+            <summary> /// 
+            Check Email Exists 
+            /// </summary> /// 
+            <param name="email">email</param> 
+            /// <returns>true or false</returns> 
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.Login(UserManagement.Application.DTOs.UserDTOs.LoginDTO)">
+            <summary>
+            Login
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.LogOut">
+            <summary>
+            logout from system
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.ResetPassword(UserManagement.Application.DTOs.UserDTOs.ResetPassRequest)">
+            <summary>
+            use to reset password
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.ConfirmResetPassword(System.String,System.String,System.String)">
+            <summary>
+            Get Email confirmation
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.ConfirmResetPassword(UserManagement.Application.DTOs.UserDTOs.ResetPasswordDTO)">
+            <summary>            
+             accept pass reset confirmation        
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.GenerateNewToken(UserManagement.Application.DTOs.UserDTOs.TokenModel)">
+            <summary>
+            Generate New Token by refreshtoken
+            </summary>
+            <param name="token">exsist token</param>
+            <returns>new auth instance</returns>
+        </member>
+        <member name="T:UserManagement.API.Controllers.v1.AdminController">
+            <summary>
+            administrative operations for user, role, and permission management
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.#ctor(UserManagement.Application.ServiceContracts.IAdminService,Microsoft.Extensions.Logging.ILogger{UserManagement.API.Controllers.v1.AdminController})">
+            <summary>
+            constructor with DI for admin service and logger
+            </summary>
+            <param name="adminService"></param>
+            <param name="logger"></param>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.GetAllUsers">
+            <summary>Get all users</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.GetUserDetails(System.Guid)">
+            <summary>Get user details</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.FilterUsersByRole(System.String)">
+            <summary>Get users by role</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.DeactivateUser(System.Guid)">
+            <summary>Deactivate user</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.ActivateUser(System.Guid)">
+            <summary>Activate user</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.DeleteUser(System.Guid)">
+            <summary>Delete user</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.AssignRole(System.Guid,System.String)">
+            <summary>Assign role to user</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.RevokeRole(System.Guid,System.String)">
+            <summary>Revoke role from user</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.GetAllRoles">
+            <summary>Get all roles</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.GetRoleById(System.Guid)">
+            <summary>Get role by ID</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.AddRole(UserManagement.Application.DTOs.RoleAddDTO)">
+            <summary>Add role</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.UpdateRole(System.Guid,UserManagement.Application.DTOs.RoleDTO)">
+            <summary>Update role</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.DeleteRole(System.Guid)">
+            <summary>Delete role</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.AssignPermissionToRole(System.Guid,System.Guid)">
+            <summary>Assign permission to role</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.RevokePermissionFromRole(System.Guid,System.Guid)">
+            <summary>Revoke permission from role</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.GetAllPermissions">
+            <summary>Get all permissions</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.GetPermissionById(System.Guid)">
+            <summary>Get permission by ID</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.AddPermission(UserManagement.Application.DTOs.PermissionAddDTO)">
+            <summary>Add permission</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.UpdatePermission(System.Guid,UserManagement.Application.DTOs.PermissionDTO)">
+            <summary>Update permission</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.DeletePermission(System.Guid)">
+            <summary>Delete permission</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.ExceptionHandel(System.Exception)">
+            <summary>
+            handel exception
+            </summary>
+            <param name="ex"></param>
+            <returns></returns>
+        </member>
+        <member name="T:UserManagement.API.Controllers.v1.UsersController">
+            <summary>
+            Provides endpoints for managing user-related data, including personal information, addresses, and phone numbers.
+            </summary>
+            <remarks>This controller handles operations such as retrieving, updating, and deleting user data, as
+            well as managing default addresses and phone numbers. It requires authorization and supports API version
+            1.0.</remarks>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.#ctor(UserManagement.Application.ServiceContracts.IUserService,Microsoft.Extensions.Logging.ILogger{UserManagement.API.Controllers.v1.UsersController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:UserManagement.API.Controllers.v1.UsersController"/> class.
+            </summary>
+            <param name="userService"></param>
+            <param name="logger"></param>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.GetUserByEmail(System.String)">
+            <summary>
+            Get user by email
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.UpdatePersonalInfo(System.Guid,UserManagement.Application.DTOs.UserDTOs.UpdatePersonalInfoRequest)">
+            <summary>
+            Update user personal information
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.GetAddresses(System.Guid)">
+            address endpoints
+            <summary>
+            get user addresses
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.AddAddress(System.Guid,UserManagement.Application.DTOs.AddressDTO)">
+            <summary>
+            Add address to user
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.UpdateAddress(System.Guid,UserManagement.Application.DTOs.AddressDTO)">
+            <summary>
+            Update user address
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.DeleteAddress(System.Guid,System.Guid)">
+            <summary>
+            Delete user address
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.SetDefaultAddress(System.Guid,System.Guid)">
+            <summary>
+            set a user address as default
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.GetPhones(System.Guid)">
+            phone endpoints
+             <summary>
+             get user phones
+             </summary>
+             <param name="userId"></param>
+             <returns></returns>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.AddPhone(System.Guid,UserManagement.Application.DTOs.PhoneDTO)">
+            <summary>
+            Add phone to user
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.UpdatePhone(System.Guid,UserManagement.Application.DTOs.PhoneDTO)">
+            <summary>
+            Update user phone
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.DeletePhone(System.Guid,System.Guid)">
+            <summary>
+            Delete user phone
+            </summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.UsersController.SetDefaultPhone(System.Guid,System.Guid)">
+            <summary>
+            set a user phone as default
+            </summary>
+        </member>
+    </members>
+</doc>
