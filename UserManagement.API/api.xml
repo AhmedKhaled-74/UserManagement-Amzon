@@ -24,10 +24,6 @@
             Provides endpoints for user account management, including registration, login, email confirmation,  password
             reset, and token generation.
             </summary>
-            <remarks>This controller handles user-related operations such as creating new accounts, authenticating
-            users,  confirming email addresses, resetting passwords, and managing JWT tokens. It integrates with ASP.NET 
-            Identity for user and role management and supports email-based workflows for account confirmation  and password
-            recovery.</remarks>
         </member>
         <member name="M:UserManagement.API.Controllers.v1.AccountController.#ctor(Microsoft.Extensions.Logging.ILogger{UserManagement.API.Controllers.v1.AccountController},Microsoft.AspNetCore.Identity.UserManager{UserManagement.Domain.Entities.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{UserManagement.Domain.Entities.Identity.ApplicationRole},UserManagement.Application.ServiceContracts.IUserPublisher,Microsoft.AspNetCore.Identity.SignInManager{UserManagement.Domain.Entities.Identity.ApplicationUser},Microsoft.Extensions.Configuration.IConfiguration,UserManagement.Application.ServiceContracts.IJwtService,Microsoft.AspNetCore.Identity.UI.Services.IEmailSender)">
             <summary>

@@ -23,10 +23,6 @@ namespace UserManagement.API.Controllers.v1
     /// Provides endpoints for user account management, including registration, login, email confirmation,  password
     /// reset, and token generation.
     /// </summary>
-    /// <remarks>This controller handles user-related operations such as creating new accounts, authenticating
-    /// users,  confirming email addresses, resetting passwords, and managing JWT tokens. It integrates with ASP.NET 
-    /// Identity for user and role management and supports email-based workflows for account confirmation  and password
-    /// recovery.</remarks>
     [AllowAnonymous]
     [ApiVersion("1.0")]
     public class AccountController : CustomHelperController
