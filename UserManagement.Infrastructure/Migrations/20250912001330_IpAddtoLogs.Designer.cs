@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserManagement.Infrastructure.DbContexts;
 
@@ -11,9 +12,11 @@ using UserManagement.Infrastructure.DbContexts;
 namespace UserManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250912001330_IpAddtoLogs")]
+    partial class IpAddtoLogs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,7 +272,7 @@ namespace UserManagement.Infrastructure.Migrations
 
                     b.HasKey("PermissionId");
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("UserManagement.Domain.Entities.Identity.RolePermission", b =>
@@ -284,7 +287,7 @@ namespace UserManagement.Infrastructure.Migrations
 
                     b.HasIndex("PermissionId");
 
-                    b.ToTable("RolePermissions", (string)null);
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("UserManagement.Domain.Entities.LoginActivity", b =>
@@ -293,9 +296,8 @@ namespace UserManagement.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Attempt")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Attempt")
+                        .HasColumnType("int");
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
@@ -309,7 +311,7 @@ namespace UserManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LoginActivities", (string)null);
+                    b.ToTable("LoginActivities");
                 });
 
             modelBuilder.Entity("UserManagement.Domain.Entities.UserActivity", b =>
@@ -330,7 +332,7 @@ namespace UserManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserActivities", (string)null);
+                    b.ToTable("UserActivities");
                 });
 
             modelBuilder.Entity("UserManagement.Domain.Entities.UserAddress", b =>
@@ -366,7 +368,7 @@ namespace UserManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("UserManagement.Domain.Entities.UserPhone", b =>
@@ -390,7 +392,7 @@ namespace UserManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Phones", (string)null);
+                    b.ToTable("Phones");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

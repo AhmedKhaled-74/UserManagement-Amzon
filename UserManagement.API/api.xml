@@ -25,7 +25,7 @@
             reset, and token generation.
             </summary>
         </member>
-        <member name="M:UserManagement.API.Controllers.v1.AccountController.#ctor(Microsoft.Extensions.Logging.ILogger{UserManagement.API.Controllers.v1.AccountController},Microsoft.AspNetCore.Identity.UserManager{UserManagement.Domain.Entities.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{UserManagement.Domain.Entities.Identity.ApplicationRole},UserManagement.Application.ServiceContracts.IUserPublisher,Microsoft.AspNetCore.Identity.SignInManager{UserManagement.Domain.Entities.Identity.ApplicationUser},Microsoft.Extensions.Configuration.IConfiguration,UserManagement.Application.ServiceContracts.IJwtService,Microsoft.AspNetCore.Identity.UI.Services.IEmailSender)">
+        <member name="M:UserManagement.API.Controllers.v1.AccountController.#ctor(Microsoft.Extensions.Logging.ILogger{UserManagement.API.Controllers.v1.AccountController},Microsoft.AspNetCore.Identity.UserManager{UserManagement.Domain.Entities.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{UserManagement.Domain.Entities.Identity.ApplicationRole},UserManagement.Application.ServiceContracts.IUserPublisher,UserManagement.Application.ServiceContracts.ILogService,Microsoft.AspNetCore.Identity.SignInManager{UserManagement.Domain.Entities.Identity.ApplicationUser},Microsoft.Extensions.Configuration.IConfiguration,UserManagement.Application.ServiceContracts.IJwtService,Microsoft.AspNetCore.Identity.UI.Services.IEmailSender)">
             <summary>
             constructor for account controller
             </summary>
@@ -95,7 +95,7 @@
             administrative operations for user, role, and permission management
             </summary>
         </member>
-        <member name="M:UserManagement.API.Controllers.v1.AdminController.#ctor(UserManagement.Application.ServiceContracts.IAdminService,Microsoft.Extensions.Logging.ILogger{UserManagement.API.Controllers.v1.AdminController})">
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.#ctor(UserManagement.Application.ServiceContracts.IAdminService,UserManagement.Application.ServiceContracts.ILogService,Microsoft.Extensions.Logging.ILogger{UserManagement.API.Controllers.v1.AdminController})">
             <summary>
             constructor with DI for admin service and logger
             </summary>
@@ -161,6 +161,18 @@
         </member>
         <member name="M:UserManagement.API.Controllers.v1.AdminController.DeletePermission(System.Guid)">
             <summary>Delete permission</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.GetAllUserActivities">
+            <summary>Get all user activities</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.GetUserActivities(System.Guid)">
+            <summary>Get user activities by user ID</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.GetAllLoginActivities">
+            <summary>Get all login activities</summary>
+        </member>
+        <member name="M:UserManagement.API.Controllers.v1.AdminController.GetUserLoginActivities(System.Guid)">
+            <summary>Get login activities by user ID</summary>
         </member>
         <member name="M:UserManagement.API.Controllers.v1.AdminController.ExceptionHandel(System.Exception)">
             <summary>

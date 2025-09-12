@@ -19,7 +19,8 @@ namespace UserManagement.API.Controllers.v1
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
-    
+        private readonly ILogService _logService;
+
         private readonly ILogger<AdminController> _logger;
         /// <summary>
         /// constructor with DI for admin service and logger
@@ -27,10 +28,10 @@ namespace UserManagement.API.Controllers.v1
         /// <param name="adminService"></param>
        
         /// <param name="logger"></param>
-        public AdminController(IAdminService adminService  , ILogger<AdminController> logger)
+        public AdminController(IAdminService adminService , ILogService logService , ILogger<AdminController> logger)
         {
             _adminService = adminService;
-           
+            _logService = logService;
             _logger = logger;
         }
 
@@ -95,11 +96,13 @@ namespace UserManagement.API.Controllers.v1
             try
             {
                 await _adminService.DeactivateUserAsync(userId);
+                await _logService.LogActivityAsync(userId, "User Deactivated by Admin");
                 return Ok(new { message = "User deactivated successfully" });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deactivating user {UserId}", userId);
+                await _logService.LogActivityAsync(userId, $"Error Deactivating User: {ex.Message}");
                 return ExceptionHandel(ex);
             }
         }
@@ -111,11 +114,13 @@ namespace UserManagement.API.Controllers.v1
             try
             {
                 await _adminService.ActivateUserAsync(userId);
+                await _logService.LogActivityAsync(userId, "User Activated by Admin");
                 return Ok(new { message = "User activated successfully" });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error activating user {UserId}", userId);
+                await _logService.LogActivityAsync(userId, $"Error Activating User: {ex.Message}");
                 return ExceptionHandel(ex);
             }
         }
@@ -127,11 +132,13 @@ namespace UserManagement.API.Controllers.v1
             try
             {
                 await _adminService.DeleteUserAsync(userId);
+                await _logService.LogActivityAsync(userId, "User Deleted by Admin");
                 return Ok(new { message = "User deleted successfully" });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting user {UserId}", userId);
+                await _logService.LogActivityAsync(userId, $"Error Deleting User: {ex.Message}");
                 return ExceptionHandel(ex);
             }
         }
@@ -143,11 +150,13 @@ namespace UserManagement.API.Controllers.v1
             try
             {
                 await _adminService.AssignRoleAsync(userId, roleName);
+                await _logService.LogActivityAsync(userId, $"Role '{roleName}' assigned by Admin");
                 return Ok(new { message = $"Role '{roleName}' assigned successfully" });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error assigning role {Role} to user {UserId}", roleName, userId);
+                await _logService.LogActivityAsync(userId, $"Error Assigning Role '{roleName}': {ex.Message}");
                 return ExceptionHandel(ex);
             }
         }
@@ -159,11 +168,13 @@ namespace UserManagement.API.Controllers.v1
             try
             {
                 await _adminService.RevokeRoleAsync(userId, roleName);
+                await _logService.LogActivityAsync(userId, $"Role '{roleName}' revoked by Admin");
                 return Ok(new { message = $"Role '{roleName}' revoked successfully" });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error revoking role {Role} from user {UserId}", roleName, userId);
+                await _logService.LogActivityAsync(userId, $"Error Revoking Role '{roleName}': {ex.Message}");
                 return ExceptionHandel(ex);
             }
         }
@@ -381,12 +392,85 @@ namespace UserManagement.API.Controllers.v1
             }
         }
         #endregion
+
+        // ---------------------- Audit MANAGEMENT ----------------------
+        #region Audit Management
+        /// <summary>Get all user activities</summary>
+        
+        [HttpGet("logs/user-activities")]
+        public async Task<ActionResult<IEnumerable<UserActivityDTO>>> GetAllUserActivities()
+        {
+            try
+            {
+                var logs = await _logService.GetAllUsersActivitiesAsync();
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all user activities");
+               return ExceptionHandel(ex);
+            }
+        }
+        /// <summary>Get user activities by user ID</summary>
+        
+        [HttpGet("logs/user-activities/{userId:guid}")]
+        public async Task<ActionResult<IEnumerable<UserActivityDTO>>> GetUserActivities(Guid userId)
+        {
+            try
+            {
+                var logs = await _logService.GetUserActivitiesAsync(userId);
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting activities for user {UserId}", userId);
+               return ExceptionHandel(ex);
+            }
+        }
+
+        /// <summary>Get all login activities</summary>
+
+        [HttpGet("logs/login-activities")]
+        public async Task<ActionResult<IEnumerable<LoginActivityDTO>>> GetAllLoginActivities()
+        {
+            try
+            {
+                var logs = await _logService.GetAllUsersLoginActivitiesAsync();
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all login activities");
+               return ExceptionHandel(ex);
+            }
+        }
+
+        /// <summary>Get login activities by user ID</summary>
+        
+        [HttpGet("logs/login-activities/{userId:guid}")]
+        public async Task<ActionResult<IEnumerable<LoginActivityDTO>>> GetUserLoginActivities(Guid userId)
+        {
+            try
+            {
+                var logs = await _logService.GetUserLoginActivitiesAsync(userId);
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting login activities for user {UserId}", userId);
+               return ExceptionHandel(ex);
+            }
+        }
+
+        #endregion
+
+        // ---------------------- EXCEPTION HANDLER ----------------------
         /// <summary>
         /// handel exception
         /// </summary>
         /// <param name="ex"></param>
         /// <returns></returns>
-    private ActionResult ExceptionHandel(Exception ex) {
+        private ActionResult ExceptionHandel(Exception ex) {
             if (ex.InnerException != null)
                 return StatusCode(500, ex.InnerException.Message);
             if (!string.IsNullOrEmpty(ex.Message))

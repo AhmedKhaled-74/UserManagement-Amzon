@@ -130,6 +130,10 @@ namespace UserManagement.API.Controllers.v1
                 {
                     address.IsDefault = true;
                 }
+                if (GetAddresses?.Count >= 5)
+                {
+                    return BadRequest("Cannot add more than 5 addresses");
+                }
                 await _userService.AddAddressAsync(userId, address);
                 return Ok(new { message = "Address added successfully" });
             }
@@ -222,6 +226,7 @@ namespace UserManagement.API.Controllers.v1
                 {
                     return NotFound(new { message = "No phones found for the user" });
                 }
+             
                 return Ok(phones);
             }
             catch (Exception ex)
@@ -242,6 +247,10 @@ namespace UserManagement.API.Controllers.v1
                 if (GetPhones == null || !GetPhones.Any())
                 {
                     phone.IsDefault = true;
+                }
+                if (GetPhones?.Count >= 5)
+                {
+                    return BadRequest(new { message = "User cannot have more than 5 phones" });
                 }
                 await _userService.AddPhoneAsync(userId, phone);
                 return Ok(new { message = "Phone added successfully" });

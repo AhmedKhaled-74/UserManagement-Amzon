@@ -16,6 +16,7 @@ using System.Net;
 using MaxMind.GeoIP2;
 using MaxMind.GeoIP2.Exceptions;
 using UserManagement.Application.DTOs.Mappers.AdminMappers;
+using UserManagement.Domain.Enums;
 
 namespace UserManagement.API.Controllers.v1
 {
@@ -30,6 +31,7 @@ namespace UserManagement.API.Controllers.v1
         private readonly ILogger<AccountController> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserPublisher _userPublisher;
+        private readonly ILogService _logService;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
@@ -51,6 +53,8 @@ namespace UserManagement.API.Controllers.v1
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             IUserPublisher userPublisher,
+            ILogService logService
+            ,
             SignInManager<ApplicationUser> signInManager,
             IConfiguration configuration,
             IJwtService jwtService,
@@ -61,6 +65,7 @@ namespace UserManagement.API.Controllers.v1
             _userManager = userManager;
             _userPublisher = userPublisher;
             _roleManager = roleManager;
+            _logService = logService;
             _signInManager = signInManager;
             _configuration = configuration;
             _jwtService = jwtService;
@@ -121,6 +126,7 @@ namespace UserManagement.API.Controllers.v1
 
                 var result = await _userManager.CreateAsync(appUser, registerDTO.Password);
                 await _userPublisher.PublishUserAdded(appUser.ToUserAdminDTO());
+                await _logService.LogActivityAsync(appUser.Id, "User Registered");
                 if (!result.Succeeded)
                 {
                     return Problem(string.Join("|", result.Errors.Select(e => e.Description)));
@@ -155,6 +161,7 @@ namespace UserManagement.API.Controllers.v1
                     appUser.Email!,
                     "Confirm your email",
                     $"<p>Please confirm your account by clicking <a href='{confirmationLink}'>here</a>.</p>");
+                await _logService.LogActivityAsync(appUser.Id, "Confirmation Email Sent");
 
                 return Ok(new
                 {
@@ -164,6 +171,7 @@ namespace UserManagement.API.Controllers.v1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in registration");
+                await _logService.LogActivityAsync(null, $"Registration error: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -188,6 +196,7 @@ namespace UserManagement.API.Controllers.v1
 
             await _userManager.UpdateAsync(user);
             await _userPublisher.PublishUserUpdated(user.ToUserAdminDTO());
+            await _logService.LogActivityAsync(user.Id, "Email Confirmed");
 
             // redirect directly to Angular app
             var redirectUrl = $"{_configuration["Jwt:Audience"]}/account/confirm-email-success" +
@@ -198,6 +207,7 @@ namespace UserManagement.API.Controllers.v1
                            user.Email!,
                            "Email Confirmation",
                            $"Email has been confirm successfully.");
+            await _logService.LogActivityAsync(user.Id, "Confirmation Success Email Sent");
             return Redirect(redirectUrl);
         }
 
@@ -237,6 +247,9 @@ namespace UserManagement.API.Controllers.v1
             {
                 var result = await _signInManager.PasswordSignInAsync(
                     loginDTO.Email!, loginDTO.Password!, loginDTO.IsPersistent, false);
+                // Get client IP (supports IPv4 and IPv6)
+                var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+                await _logService.LogLoginActivityAsync((await _userManager.FindByEmailAsync(loginDTO.Email!))?.Id, result.Succeeded ? LoginAttempts.Success : LoginAttempts.Failed,ip);
 
                 if (!result.Succeeded)
                     return Problem("Invalid email or password", statusCode: 401);
@@ -297,6 +310,7 @@ namespace UserManagement.API.Controllers.v1
                 return BadRequest("Invalid request.");
             }
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            await _logService.LogActivityAsync(user.Id, "Password Reset Token Generated");
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
             var resetLink = Url.Action(
@@ -309,6 +323,7 @@ namespace UserManagement.API.Controllers.v1
                 user.Email!,
                 "Reset your password",
                 $"<p>You can reset your password by clicking <a href='{resetLink}'>here</a>.</p>");
+            await _logService.LogActivityAsync(user.Id, "Password Reset Email Sent");
             return Ok(new { message = "Password reset link has been sent to your email." });
         }
         /// <summary>
@@ -343,6 +358,7 @@ namespace UserManagement.API.Controllers.v1
             var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordDTO.Token!));
             var result = await _userManager.ResetPasswordAsync(user, decodedToken, resetPasswordDTO.NewPassword);
             if (!result.Succeeded) return BadRequest("Password renew failed.");
+            await _logService.LogActivityAsync(user.Id, "Password Reset Successfully");
             await _emailSender.SendEmailAsync(
                             user.Email!,
                             "Reset password",

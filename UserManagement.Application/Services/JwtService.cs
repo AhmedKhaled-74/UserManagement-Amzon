@@ -67,6 +67,10 @@ namespace UserManagement.Application.Services
 
         public ClaimsPrincipal? GetJwtPrincipal(string? token)
         {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return null; // or throw a custom exception if you want
+            }
             TokenValidationParameters tokenValidationParameters = new TokenValidationParameters()
             {
                 ValidateAudience = true,
@@ -79,6 +83,7 @@ namespace UserManagement.Application.Services
             };
             JwtSecurityTokenHandler jwtTokenHandler = new JwtSecurityTokenHandler();
             var principal = jwtTokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken? securityToken);
+
             if (principal == null || securityToken is not JwtSecurityToken jwtSecurity
                 || !jwtSecurity.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
                                                   StringComparison.InvariantCultureIgnoreCase))

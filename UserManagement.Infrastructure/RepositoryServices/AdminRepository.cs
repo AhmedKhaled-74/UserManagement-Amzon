@@ -14,11 +14,13 @@ namespace UserManagement.Infrastructure.RepositoryServices
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly ILogRepo _logRepo;
         private readonly AppDbContext _db;
 
-        public AdminRepository(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, AppDbContext db)
+        public AdminRepository(UserManager<ApplicationUser> userManager,ILogRepo logRepo , RoleManager<ApplicationRole> roleManager, AppDbContext db)
         {
             _userManager = userManager;
+            _logRepo = logRepo;
             _roleManager = roleManager;
             _db = db;
         }
@@ -174,6 +176,7 @@ namespace UserManagement.Infrastructure.RepositoryServices
             foreach (var user in usersInRole)
             {
               await AssignRoleAsync(user.Id, "User");
+              await _logRepo.LogActivityAsync(user.Id, $"Role '{role.Name}' deleted. Assigned to default 'User' role.");
             }
             var result = await _roleManager.DeleteAsync(role);
             if (!result.Succeeded)

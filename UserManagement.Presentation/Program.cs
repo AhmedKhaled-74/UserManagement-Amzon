@@ -84,6 +84,31 @@ builder.Services.AddSwaggerGen(c =>
         Title = "User Management API",
         Version = "v1"
     });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+{
+    {
+        new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        },
+        Array.Empty<string>()
+    }
+});
+
 });
 
 // register the publisher (below)
@@ -98,6 +123,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+
+builder.Services.AddScoped<ILogRepo, LogRepo>();
+builder.Services.AddScoped<ILogService, LogService>();
 
 
 // logging
@@ -185,12 +213,12 @@ app.UseHsts();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseRouting();
+
 // Use the CORS policy
 
+app.UseRouting();
 app.UseCors("AllowAngularClient");
 
-app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -202,6 +230,7 @@ app.MapHub<UserHub>("/api/v1/admin/hubs/users");
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
+
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "1.0");
 });
 
