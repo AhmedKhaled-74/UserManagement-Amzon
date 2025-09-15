@@ -42,22 +42,14 @@ namespace UserManagement.Infrastructure.DbContexts
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.Role)          // one role per user
+                .WithMany(r => r.Users)       // a role can have many users
+                .HasForeignKey(u => u.RoleId) // FK in ApplicationUser
+                .OnDelete(DeleteBehavior.Restrict);
             // auth entites
 
-            modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
-            {
-                entity.HasKey(ur => new { ur.UserId, ur.RoleId });
-
-                entity.HasOne<ApplicationUser>()
-                      .WithMany()
-                      .HasForeignKey(ur => ur.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne<ApplicationRole>()
-                      .WithMany()
-                      .HasForeignKey(ur => ur.RoleId)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
+            
 
             modelBuilder.Entity<Permission>(entity =>
             {
@@ -79,10 +71,17 @@ namespace UserManagement.Infrastructure.DbContexts
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
+
             // logs entities 
             modelBuilder.Entity<LoginActivity>()
            .Property(l => l.Attempt)
            .HasConversion<string>();
+
+
+           
+
+
+
         }
     }
 }

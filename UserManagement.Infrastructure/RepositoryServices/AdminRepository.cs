@@ -70,7 +70,7 @@ namespace UserManagement.Infrastructure.RepositoryServices
 
         public async Task<IEnumerable<ApplicationUser>?> FilterUsersByRoleAsync(string roleName)
         {
-            return await _userManager.GetUsersInRoleAsync(roleName);
+            return await _db.Users.Where(u=>string.Equals(u.RoleName,roleName,StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
         }
 
         public async Task<ApplicationUser?> GetUserDetailsAsync(Guid userId)
@@ -89,10 +89,9 @@ namespace UserManagement.Infrastructure.RepositoryServices
             if (user.RoleName!.Equals(roleName, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Cannot assign to the User does have this role already.");
 
-            await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
-            await _userManager.AddToRoleAsync(user, roleName);
             user.RoleName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(roleName.ToLower());
             user.Role = role;
+            user.RoleId = role.Id;
             await _db.SaveChangesAsync();
         }
 
@@ -108,10 +107,10 @@ namespace UserManagement.Infrastructure.RepositoryServices
 
             if (roleName.Equals("User", StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Cannot revoke the User role.");
-            await _userManager.RemoveFromRoleAsync(user, roleName);
-            await _userManager.AddToRoleAsync(user, "User");
+
             user.RoleName = "User";
             user.Role = await _roleManager.FindByNameAsync("User");
+            user.RoleId = role.Id;
             await _db.SaveChangesAsync();
 
         }
@@ -146,11 +145,17 @@ namespace UserManagement.Infrastructure.RepositoryServices
         {
             var existing = await _roleManager.FindByIdAsync(role.Id.ToString());
             if (existing == null) throw new InvalidOperationException("Role not found.");
-            var usersInRole = await _userManager.GetUsersInRoleAsync(existing.Name!);
+
+            var usersInRole = await _db.Users
+                .Where(u=>u.RoleId == existing.Id)
+                .ToListAsync();
+
             existing.Name = role.Name;
+
             foreach (var user in usersInRole)
             {
                 user.RoleName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name!.ToLower());
+                user.RoleId = role.Id;
                 await _userManager.UpdateAsync(user);
             }
                 var result = await _roleManager.UpdateAsync(existing);
@@ -172,7 +177,10 @@ namespace UserManagement.Infrastructure.RepositoryServices
             if (defaultRole == null)
                 throw new InvalidOperationException("Default 'User' role not found.");
 
-            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name!);
+            var usersInRole = await _db.Users
+                .Where(u => u.RoleId == role.Id)
+                .ToListAsync();
+
             foreach (var user in usersInRole)
             {
               await AssignRoleAsync(user.Id, "User");

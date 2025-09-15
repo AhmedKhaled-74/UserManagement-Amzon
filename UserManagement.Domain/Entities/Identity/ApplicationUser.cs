@@ -12,6 +12,8 @@ namespace UserManagement.Domain.Entities.Identity
         public string? ActiveStatus { get; set; }
         public string? RoleName { get; set; } = "User";
 
+        public Guid RoleId { get; set; }
+
         // Navigation properties
         public virtual Guid? AdminId { get; set; }
         public virtual ApplicationUser? Admin { get; set; }

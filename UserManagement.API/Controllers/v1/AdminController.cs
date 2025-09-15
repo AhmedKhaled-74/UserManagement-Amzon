@@ -1,7 +1,11 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using UserManagement.Application.DTOs;
 using UserManagement.Application.DTOs.Mappers.UserMappers;
 using UserManagement.Application.DTOs.UserDTOs;

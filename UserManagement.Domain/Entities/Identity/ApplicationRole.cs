@@ -6,6 +6,7 @@ namespace UserManagement.Domain.Entities.Identity
 {
     public class ApplicationRole : IdentityRole<Guid>
     {
+        public virtual ICollection<ApplicationUser>? Users { get; set; }
         public virtual ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
     }
 }

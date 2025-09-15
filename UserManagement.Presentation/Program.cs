@@ -20,6 +20,7 @@ using UserManagement.Application.RepositoryContracts;
 using UserManagement.Application.ServiceContracts;
 using UserManagement.Application.Services;
 using UserManagement.Domain.Entities.Identity;
+using UserManagement.Infrastructure.CustomIdentity;
 using UserManagement.Infrastructure.DbContexts;
 using UserManagement.Infrastructure.RepositoryServices;
 using UserManagement.Infrastructure.Services;
@@ -76,8 +77,10 @@ var xmlPath = Path.Combine(Directory.GetCurrentDirectory(),
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
-
+    if (File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+    }
     // Add this if you want to support multiple versions in Swagger
     c.SwaggerDoc("v1", new OpenApiInfo()
     {
@@ -110,6 +113,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 });
+
 
 // register the publisher (below)
 builder.Services.AddScoped<IUserPublisher, SignalRUserPublisher>();
@@ -148,6 +152,8 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 .AddRoleStore<RoleStore<ApplicationRole, AppDbContext, Guid>>()
 .AddRoleManager<RoleManager<ApplicationRole>>()
 .AddUserManager<UserManager<ApplicationUser>>();
+
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, CustomUserClaimsPrincipalFactory>();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {

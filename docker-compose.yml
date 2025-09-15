@@ -1,0 +1,58 @@
+services:
+  usermanagement:
+    build:
+      context: . 
+      dockerfile: UserManagement.Presentation/Dockerfile
+    container_name: user-management-app
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__Default=Server=sqlserver;Database=UserManagement;User Id=sa;Password=YourStrong@Password123;TrustServerCertificate=true;
+      - Jwt__Issuer=http://localhost:5000
+      - Jwt__Audience=http://localhost:4200
+      - Email__Smtp__Host=smtp.gmail.com
+      - Email__Smtp__Port=587
+      - Email__Smtp__User=ahmedkhaledusermanager@gmail.com
+      - Email__Smtp__Password=wxncptufavnjmpyd
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - usermanagement-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: user-management-db
+    environment:
+      - SA_PASSWORD=YourStrong@Password123
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - usermanagement-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong@Password123" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  sqlserver_data:
+
+networks:
+  usermanagement-network:
+    driver: bridge

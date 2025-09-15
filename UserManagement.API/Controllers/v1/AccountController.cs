@@ -17,6 +17,13 @@ using MaxMind.GeoIP2;
 using MaxMind.GeoIP2.Exceptions;
 using UserManagement.Application.DTOs.Mappers.AdminMappers;
 using UserManagement.Domain.Enums;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using System;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Linq;
 
 namespace UserManagement.API.Controllers.v1
 {
@@ -122,6 +129,7 @@ namespace UserManagement.API.Controllers.v1
                 }
                 ApplicationUser appUser = registerDTO.ToApplicationUser();
                 appUser.Role = role;
+                appUser.RoleId = role.Id;
                 appUser.ActiveStatus = appUser.EmailConfirmed ? "Active" : "Suspend";
 
                 var result = await _userManager.CreateAsync(appUser, registerDTO.Password);
@@ -142,11 +150,8 @@ namespace UserManagement.API.Controllers.v1
                     .ToList()
                     .ForEach(address => address!.UserId = appUser.Id);
                 await _userManager.UpdateAsync(appUser);
-                var roleResult = await _userManager.AddToRoleAsync(appUser, registerDTO.RoleName);
-                if (!roleResult.Succeeded)
-                {
-                    return Problem(string.Join("|", roleResult.Errors.Select(e => e.Description)));
-                }
+                
+          
 
                 // Generate email confirmation token
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
