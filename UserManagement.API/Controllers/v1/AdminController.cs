@@ -11,7 +11,7 @@ using UserManagement.Application.DTOs.Mappers.UserMappers;
 using UserManagement.Application.DTOs.UserDTOs;
 using UserManagement.Application.ServiceContracts;
 
-namespace UserManagement.API.Controllers.v1
+namespace UserManagement.Presentation.Controllers.v1
 {
     /// <summary>
     /// administrative operations for user, role, and permission management

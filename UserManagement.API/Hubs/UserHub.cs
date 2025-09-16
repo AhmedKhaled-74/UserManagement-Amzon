@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
-namespace UserManagement.API.Hubs
+namespace UserManagement.Presentation.Hubs
 {
     [Authorize(Roles = "Admin")]
     public class UserHub : Hub

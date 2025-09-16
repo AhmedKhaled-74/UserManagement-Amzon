@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
-namespace UserManagement.Presentation.StartUpConfigurations
+namespace UserManagement.API.StartUpConfigurations
 {
     public class EmailConfirmationTokenProvider<TUser>
       : DataProtectorTokenProvider<TUser> where TUser : class

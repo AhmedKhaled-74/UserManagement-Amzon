@@ -14,8 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
-using UserManagement.API;
-using UserManagement.API.Hubs;
+using UserManagement.Presentation;
+using UserManagement.Presentation.Hubs;
 using UserManagement.Application.RepositoryContracts;
 using UserManagement.Application.ServiceContracts;
 using UserManagement.Application.Services;
@@ -24,7 +24,7 @@ using UserManagement.Infrastructure.CustomIdentity;
 using UserManagement.Infrastructure.DbContexts;
 using UserManagement.Infrastructure.RepositoryServices;
 using UserManagement.Infrastructure.Services;
-using UserManagement.Presentation.StartUpConfigurations;
+using UserManagement.API.StartUpConfigurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,9 +58,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddApiVersioning(options =>
 {
-    options.ReportApiVersions = true; // Include API versions in response headers
+    options.ReportApiVersions = true; // Include Presentation versions in response headers
     options.AssumeDefaultVersionWhenUnspecified = true; // Assume default version if none specified
-    options.DefaultApiVersion = new ApiVersion(1, 0); // Set default API version
+    options.DefaultApiVersion = new ApiVersion(1, 0); // Set default Presentation version
     options.ApiVersionReader = new UrlSegmentApiVersionReader(); // Read version from URL segment
 })
 .AddApiExplorer(options =>

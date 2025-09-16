@@ -13,13 +13,13 @@ using UserManagement.Application.DTOs.Mappers.UserMappers;
 using UserManagement.Application.DTOs.UserDTOs;
 using UserManagement.Application.ServiceContracts;
 
-namespace UserManagement.API.Controllers.v1
+namespace UserManagement.Presentation.Controllers.v1
 {
     /// <summary>
     /// Provides endpoints for managing user-related data, including personal information, addresses, and phone numbers.
     /// </summary>
     /// <remarks>This controller handles operations such as retrieving, updating, and deleting user data, as
-    /// well as managing default addresses and phone numbers. It requires authorization and supports API version
+    /// well as managing default addresses and phone numbers. It requires authorization and supports Presentation version
     /// 1.0.</remarks>
 
     [Authorize]

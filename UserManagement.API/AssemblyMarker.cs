@@ -1,4 +1,4 @@
-﻿namespace UserManagement.API
+﻿namespace UserManagement.Presentation
 {
     /// <summary>
     /// used to locate the assembly for add application parts 

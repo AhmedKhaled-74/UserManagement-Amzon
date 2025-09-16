@@ -25,7 +25,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Linq;
 
-namespace UserManagement.API.Controllers.v1
+namespace UserManagement.Presentation.Controllers.v1
 {
     /// <summary>
     /// Provides endpoints for user account management, including registration, login, email confirmation,  password
@@ -101,7 +101,7 @@ namespace UserManagement.API.Controllers.v1
             }
         }
 
-        // IP API response class
+        // IP Presentation response class
   
 
         /// <summary>

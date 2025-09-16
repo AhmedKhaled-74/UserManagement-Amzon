@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-UserManagement.Presentation-8263caf4-eabb-4eec-ada3-c9d7165fa38f</UserSecretsId>
+    <UserSecretsId>aspnet-UserManagement.API-8263caf4-eabb-4eec-ada3-c9d7165fa38f</UserSecretsId>
     <RestoreAdditionalProjectFallbackFolders></RestoreAdditionalProjectFallbackFolders>
     <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
   </PropertyGroup>
@@ -29,11 +29,11 @@
     <ProjectReference Include="..\UserManagement.Application\UserManagement.Application.csproj" />
     <ProjectReference Include="..\UserManagement.Domain\UserManagement.Domain.csproj" />
     <ProjectReference Include="..\UserManagement.Infrastructure\UserManagement.Infrastructure.csproj" />
-	<ProjectReference Include="..\UserManagement.API\UserManagement.API.csproj" />
+	<ProjectReference Include="..\UserManagement.API\UserManagement.Presentation.csproj" />
   </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(OutputPath)UserManagement.API.xml" Pack="true" CopyToOutputDirectory="PreserveNewest" />
+        <None Include="bin\Debug\net9.0\UserManagement.Presentation.xml" Pack="true" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>

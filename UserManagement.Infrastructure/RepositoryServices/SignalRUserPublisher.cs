@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UserManagement.API.Hubs;
+using UserManagement.Presentation.Hubs;
 using UserManagement.Application.DTOs.UserDTOs;
 
 using UserManagement.Application.ServiceContracts;
