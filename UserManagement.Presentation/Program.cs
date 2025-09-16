@@ -20,7 +20,6 @@ using UserManagement.Application.RepositoryContracts;
 using UserManagement.Application.ServiceContracts;
 using UserManagement.Application.Services;
 using UserManagement.Domain.Entities.Identity;
-using UserManagement.Infrastructure.CustomIdentity;
 using UserManagement.Infrastructure.DbContexts;
 using UserManagement.Infrastructure.RepositoryServices;
 using UserManagement.Infrastructure.Services;
@@ -153,7 +152,6 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 .AddRoleManager<RoleManager<ApplicationRole>>()
 .AddUserManager<UserManager<ApplicationUser>>();
 
-builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, CustomUserClaimsPrincipalFactory>();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
