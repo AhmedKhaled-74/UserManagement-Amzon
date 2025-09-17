@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.Domain.Entities;
 using UserManagement.Domain.Entities.Identity;
+using UserManagement.Domain.LogsEntities;
 
 namespace UserManagement.Infrastructure.DbContexts
 {
@@ -16,6 +17,7 @@ namespace UserManagement.Infrastructure.DbContexts
 
         public DbSet<UserActivity> UserActivities { get; set; }
         public DbSet<LoginActivity> LoginActivities { get; set; }
+        public DbSet<RoleActivity> RoleActivities { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -73,12 +75,27 @@ namespace UserManagement.Infrastructure.DbContexts
 
 
             // logs entities 
-            modelBuilder.Entity<LoginActivity>()
-           .Property(l => l.Attempt)
-           .HasConversion<string>();
 
+            modelBuilder.Entity<LoginActivity>(entity =>
+            { 
+                entity.HasKey(la => la.Id);
+                entity.Property(la => la.Attempt).HasConversion<string>();
+            });
 
-           
+            modelBuilder.Entity<UserActivity>(entity =>
+            {
+                entity.HasKey(ua => ua.Id);
+                entity.Property(ua => ua.Action).HasMaxLength(255).IsRequired();
+                
+            });
+
+            modelBuilder.Entity<RoleActivity>(entity =>
+            {  
+                entity.HasKey(ra => ra.Id);
+                entity.Property(ra => ra.Action).HasMaxLength(255).IsRequired();
+
+            });
+
 
 
 

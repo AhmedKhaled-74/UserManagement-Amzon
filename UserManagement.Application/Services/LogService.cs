@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using UserManagement.Domain.Enums;
 using UserManagement.Application.RepositoryContracts;
 using UserManagement.Application.ServiceContracts;
-using UserManagement.Application.DTOs;
 using UserManagement.Application.DTOs.Mappers.LogMappers;
+using UserManagement.Application.DTOs.LogDTOs;
 
 namespace UserManagement.Application.Services
 {
@@ -30,6 +30,12 @@ namespace UserManagement.Application.Services
             return  loginActivities.Select(la => la.ToLoginActivityDTO());
         }
 
+        public async Task<IEnumerable<RoleActivityDTO>?> GetAllRolesActivitiesAsync()
+        {
+            var rolesActivities = await _logRepo.GetAllRolesActivitiesAsync();     
+            return rolesActivities?.Select(ra => ra.ToRoleActivityDTO());
+        }
+
         public async Task LogActivityAsync(Guid? userId, string? action)
         {
             if (userId == null || action == null)
@@ -43,6 +49,13 @@ namespace UserManagement.Application.Services
             if (userId == null || attempt == null)
                 throw new ArgumentNullException("UserId or Attempt cannot be null");
             await _logRepo.LogLoginActivityAsync(userId.Value, attempt.Value ,Ip);
+        }
+
+        public async Task LogRoleActivityAsync(Guid? roleId, string? action)
+        {
+            if (roleId == null || action == null)
+                throw new ArgumentNullException("RoleId or Action cannot be null");
+            await _logRepo.LogRoleActivityAsync(roleId.Value, action);
         }
 
         public async Task<IEnumerable<UserActivityDTO>> GetUserActivitiesAsync(Guid? userId)

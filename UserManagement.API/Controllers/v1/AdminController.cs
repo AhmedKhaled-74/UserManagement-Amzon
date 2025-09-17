@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Threading.Tasks;
 using UserManagement.Application.DTOs;
+using UserManagement.Application.DTOs.LogDTOs;
 using UserManagement.Application.DTOs.Mappers.UserMappers;
 using UserManagement.Application.DTOs.UserDTOs;
 using UserManagement.Application.ServiceContracts;
@@ -227,11 +229,13 @@ namespace UserManagement.Presentation.Controllers.v1
         {
             try
             {
-                await _adminService.AddRoleAsync(new RoleDTO
+                var newRole =new RoleDTO
                 {
                     Id = Guid.NewGuid(),
                     Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name!.ToLower())
-                });
+                };
+                await _adminService.AddRoleAsync(newRole);
+                await _logService.LogRoleActivityAsync(newRole.Id, $"Role with name {role.Name} added successfully");
                 return Ok(new { message = "Role added successfully" });
             }
             catch (Exception ex)
@@ -249,8 +253,12 @@ namespace UserManagement.Presentation.Controllers.v1
             {
                 if (roleId != role.Id)
                     return BadRequest("Role ID mismatch");
-
+                var oldRole =  await _adminService.GetRoleByIdAsync(roleId); 
+                if (oldRole == null)
+                    return BadRequest("Role ID NotFound");
                 await _adminService.UpdateRoleAsync(role);
+                await _logService.LogRoleActivityAsync(role.Id, $"Role with old name {oldRole?.Name} Updated with {role.Name} successfully");
+
                 return Ok(new { message = "Role updated successfully" });
             }
             catch (Exception ex)
@@ -266,7 +274,11 @@ namespace UserManagement.Presentation.Controllers.v1
         {
             try
             {
+                var role = await _adminService.GetRoleByIdAsync(roleId);
+                if (role == null)
+                    return NotFound();
                 await _adminService.DeleteRoleAsync(roleId);
+                await _logService.LogRoleActivityAsync(roleId, $"Role with name {role.Name} Deleted successfully");
                 return Ok(new { message = "Role deleted successfully" });
             }
             catch (Exception ex)
@@ -282,7 +294,13 @@ namespace UserManagement.Presentation.Controllers.v1
         {
             try
             {
+                var role = await _adminService.GetRoleByIdAsync(roleId);
+                var permission = await _adminService.GetPermissionByIdAsync(permissionId);
+                if (role == null || permission == null)
+                    return NotFound();
                 await _adminService.AssignPermissionToRoleAsync(roleId, permissionId);
+                await _logService.LogRoleActivityAsync(roleId, $"Role with name {role.Name} added new persission with Task {permission.Task} successfully");
+
                 return Ok(new { message = "Permission assigned to role successfully" });
             }
             catch (Exception ex)
@@ -298,12 +316,20 @@ namespace UserManagement.Presentation.Controllers.v1
         {
             try
             {
+                var role = await _adminService.GetRoleByIdAsync(roleId);
+                var permission = await _adminService.GetPermissionByIdAsync(permissionId);
+                if (role == null || permission == null)
+                    return NotFound();
                 await _adminService.RevokePermissionFromRoleAsync(roleId, permissionId);
+                await _logService.LogRoleActivityAsync(roleId, $"Role with name {role.Name} revoked new persission with Task {permission.Task} successfully");
                 return Ok(new { message = "Permission revoked from role successfully" });
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error revoking permission {PermissionId} from role {RoleId}", permissionId, roleId);
+                await _logService.LogRoleActivityAsync(roleId, $"Role revoked a persission unsuccessfully");
+
                 return ExceptionHandel(ex);
             }
         }
@@ -415,8 +441,25 @@ namespace UserManagement.Presentation.Controllers.v1
                return ExceptionHandel(ex);
             }
         }
+
+        /// <summary>Get all roles activities</summary>
+
+        [HttpGet("logs/roles-activities")]
+        public async Task<ActionResult<IEnumerable<UserActivityDTO>>> GetAllRolesActivities()
+        {
+            try
+            {
+                var logs = await _logService.GetAllRolesActivitiesAsync();
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all roles activities");
+                return ExceptionHandel(ex);
+            }
+        }
         /// <summary>Get user activities by user ID</summary>
-        
+
         [HttpGet("logs/user-activities/{userId:guid}")]
         public async Task<ActionResult<IEnumerable<UserActivityDTO>>> GetUserActivities(Guid userId)
         {

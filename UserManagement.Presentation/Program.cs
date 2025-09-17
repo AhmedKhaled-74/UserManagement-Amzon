@@ -216,7 +216,8 @@ var app = builder.Build();
 app.UseHsts();
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+
+//app.UseStaticFiles();
 
 // Use the CORS policy
 

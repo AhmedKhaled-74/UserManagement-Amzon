@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UserManagement.Domain.Enums;
-using UserManagement.Domain.Entities;
+using UserManagement.Domain.LogsEntities;
 
 namespace UserManagement.Application.RepositoryContracts
 {
@@ -15,7 +15,12 @@ namespace UserManagement.Application.RepositoryContracts
         Task<IEnumerable<LoginActivity>> GetAllUsersLoginActivitiesAsync();
         Task<IEnumerable<LoginActivity>?> GetUserLoginActivitiesAsync(Guid userId);
 
+        Task<IEnumerable<RoleActivity>?> GetAllRolesActivitiesAsync();
+
+
         Task LogActivityAsync(Guid userId, string action);
         Task LogLoginActivityAsync(Guid userId, LoginAttempts attempt, string? Ip);
+        Task LogRoleActivityAsync(Guid roleId, string action);
+
     }
 }

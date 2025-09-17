@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UserManagement.Domain.Enums;
 using UserManagement.Application.RepositoryContracts;
-using UserManagement.Domain.Entities;
 using UserManagement.Infrastructure.DbContexts;
+using UserManagement.Domain.LogsEntities;
 
 namespace UserManagement.Infrastructure.RepositoryServices
 {
@@ -27,6 +27,14 @@ namespace UserManagement.Infrastructure.RepositoryServices
         {
             return await _context.LoginActivities.OrderByDescending(la => la.Timestamp).ToListAsync();
         }
+
+
+        public async Task<IEnumerable<RoleActivity>?> GetAllRolesActivitiesAsync()
+        {
+            return await _context.RoleActivities.OrderByDescending(la => la.Timestamp).ToListAsync();
+        }
+
+
 
         public async Task LogActivityAsync(Guid userId, string action)
         {
@@ -48,6 +56,18 @@ namespace UserManagement.Infrastructure.RepositoryServices
                 UserId = userId,
                 IpAddress = Ip??"",
                 Attempt = attempt.ToString(),
+                Timestamp = DateTime.UtcNow
+            });
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task LogRoleActivityAsync(Guid roleId , string action)
+        {
+            await _context.RoleActivities.AddAsync(new RoleActivity
+            {
+                Id = Guid.NewGuid(),
+                RoleId = roleId,
+                Action = action ?? "",
                 Timestamp = DateTime.UtcNow
             });
             await _context.SaveChangesAsync();

@@ -1,6 +1,7 @@
-﻿using UserManagement.Domain.Enums;
+﻿using UserManagement.Domain.Entities.Identity;
+using UserManagement.Domain.Enums;
 
-namespace UserManagement.Domain.Entities
+namespace UserManagement.Domain.LogsEntities
 {
     public class LoginActivity
     {
@@ -9,8 +10,10 @@ namespace UserManagement.Domain.Entities
         public string IpAddress { get; set; } = "";
         public string Attempt { get; set; } = LoginAttempts.Success.ToString();
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+   
+
 
     }
-   
+
 
 }

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UserManagement.Domain.Entities;
+using UserManagement.Application.DTOs.LogDTOs;
+using UserManagement.Domain.LogsEntities;
 
 namespace UserManagement.Application.DTOs.Mappers.LogMappers
 {
